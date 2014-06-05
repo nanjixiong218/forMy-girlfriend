@@ -1,0 +1,4 @@
+Manifest-Version:1.0
+Main-Class:com.web.GetAll
+Class-Path:.lib/jxl.jar
+Created-By:IceWee
