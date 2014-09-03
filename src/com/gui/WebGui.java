@@ -246,7 +246,7 @@ public class WebGui extends JFrame implements ActionListener,ItemListener{
 							String province =comboPro.getSelectedItem().toString();
 							String month=comboMonth.getSelectedItem().toString();
 							//需要先建立对应的目录
-							File file = new File("E:/temp/temp.xls");
+							File file = new File("D:/temp/temp.xls");
 							String htmlurl="http://www.eshow365.com/";
 							WebContent1 wc = new WebContent1(null, htmlurl);
 							try {
