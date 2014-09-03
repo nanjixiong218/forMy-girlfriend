@@ -233,24 +233,20 @@ public class WebGui extends JFrame implements ActionListener,ItemListener{
 						textAreaDisplay.setText("开始了哦亲，请耐心等待……喝杯咖啡吧，嘎嘎！");
 					}
 				});
-				
-				
 				try {
 					TimeUnit.SECONDS.sleep(3);
 				} catch (InterruptedException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
-				
-				
-				
 				try {
-					
+					//执行网页内容抓取的线程
 					exec.execute(new Runnable(){
 						public void run(){
 							String province =comboPro.getSelectedItem().toString();
 							String month=comboMonth.getSelectedItem().toString();
-							File file = new File("D:/file/text.xls");
+							//需要先建立对应的目录
+							File file = new File("E:/myExcel/text.xls");
 							String htmlurl="http://www.eshow365.com/";
 							WebContent1 wc = new WebContent1(null, htmlurl);
 							try {

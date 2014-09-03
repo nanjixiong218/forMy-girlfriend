@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 import javax.swing.JList;
 
 import com.excel.util.Write;
-import com.gui.WebGui;
 
 public class WebContent1 {
 	private JList contentPanel;
@@ -25,11 +24,36 @@ public class WebContent1 {
 		this.url = weburl;
 		hm = new HashMap<String, String>();
 	}
+	/**
+	 * 根据url获得省份链接
+	 */
+	public HashMap<String,String> getProvinces(String url) throws Exception {
+		HashMap<String ,String> hm = new HashMap<String, String>();
+//		StringBuffer sb = new StringBuffer();
+		String html = getOneHtml(url);
+		//String title = getTitle(html);
+		
+		List <String > links = getLinkProvince(html);
+		for(int i = 0;i<links.size();i++){
+			String str = links.get(i);
+			String name = outTag(str);
+			if(name.equals("上海展会")||name.equals("北京展会")||name.equals("广州展会")||name.equals("深圳展会")){
+				String href = getHrefForProvince(str);
+				hm.put(name, href);
+			}
+		}
+		return hm;
+	}
+	/**
+	 * 根据url获得页面html字符串
+	 * @param htmlurl
+	 * @return
+	 * @throws Exception
+	 */
 	public String  getOneHtml(String htmlurl) throws Exception{
-		URL url;
+		URL url = new URL(htmlurl);
 		String temp;
 		StringBuffer sb = new StringBuffer();
-		url = new URL(htmlurl);
 		BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream(),"utf-8"));
 		while((temp = in.readLine())!=null){
 			sb.append(temp);
@@ -83,6 +107,11 @@ public class WebContent1 {
 		}
 		return getPlaceF1(place);
 	}
+	/**
+	 * 从html字符串中用正则匹配省份超级链接
+	 * @param s
+	 * @return
+	 */
 	public List<String> getLinkProvince(String s){
 		String regex ;
 		List<String> list = new ArrayList<String>();
@@ -176,7 +205,7 @@ public class WebContent1 {
 	public List<String> getLinkMonth(String s){
 		String regex ;
 		List<String> list = new ArrayList<String>();
-		regex="<a[^>]*href=(\"([^\"]*)\"|\'([^\']*)\'|([^\\s>]*))[^>]*>(.*?)月展会</a>";
+		regex="<a[^>]*?href=(\"([^\"]*)\"|\'([^\']*)\'|([^\\s>]*))[^>]*?>(\\d*?)月展会</a>";
 		Pattern pa = Pattern.compile(regex,Pattern.CANON_EQ);
 		Matcher ma = pa.matcher(s);
 		while(ma.find()){
@@ -197,24 +226,7 @@ public class WebContent1 {
 		return hm;
 		
 	}*/
-	public HashMap<String,String> getProvinces(String url) throws Exception {
-		HashMap<String ,String> hm = new HashMap<String, String>();
-//		StringBuffer sb = new StringBuffer();
-		String html = getOneHtml(url);
-		//String title = getTitle(html);
-		
-		List <String > links = getLinkProvince(html);
-		for(int i = 0;i<links.size();i++){
-			String str = links.get(i);
-			String name = outTag(str);
-			if(name.equals("上海展会")||name.equals("北京展会")||name.equals("广州展会")||name.equals("深圳展会")){
-				String href = getHrefForProvince(str);
-				hm.put(name, href);
-			}
-			
-		}
-		return hm;
-	}
+	
 	public List<String> getMeets(String url) throws Exception {
 		List<String> links = new ArrayList<String>();
 		List<String> hrefs = new ArrayList<String>();
@@ -247,6 +259,11 @@ public class WebContent1 {
 		}
 		return hrefs;
 	}
+	/**
+	 * 从省份超链接中匹配出url
+	 * @param s
+	 * @return
+	 */
 	public String getHrefForProvince(String s){
 		String regex = "http.*\\.com";
 		String result = "";
@@ -257,6 +274,11 @@ public class WebContent1 {
 		}
 		return result;
 	}	
+	/**
+	 * 从展会url中匹配出url
+	 * @param s
+	 * @return
+	 */
 	public String getHrefForMeet(String s){
 		String regex = "http.*\\.html";
 		String result = "";
@@ -329,21 +351,24 @@ public class WebContent1 {
 	}
 	public void getContentGui(String province,String month,File file) throws Exception{
 		String tip1="可能失败了，这个月份不行……";
-	//	wg.getTextAreaDisplay().setText(tip1);
-	//	Thread.sleep(1000);
-	//	String s = wg.getTextAreaDisplay().getText();
-	//	System.out.println(s);
-	//	wg.setVisible(true);
+		//excel操作类
 		Write write = new Write();
+		//最终结果map
 		HashMap<String,List<String>> hm = new HashMap<String,List<String>>();
+		
 		List<String> titles = new ArrayList<String>();
 		List<String> places = new ArrayList<String>();
 		List<String> times = new ArrayList<String>();
+		//得到省份对应的url的map  这里应该直接吧province传进去直接获得对应省份的url
 		HashMap<String, String> hmProvinceHrefs = getProvinces(url);
+		//获得对应省份的url
 		String provinceUrl = hmProvinceHrefs.get(province);
+		//得到所有月份的url
 		HashMap<String, String> hmMonthHrefs = getMonth(provinceUrl);
+		//获得对应月份的url
 		String monthUrl = hmMonthHrefs.get(month);
 		List<String> meetHrefs = getMeetsForMonth(monthUrl);
+		
 		for(int i=0;i<meetHrefs.size();i++){
 			 String meetNow = meetHrefs.get(i);
 			 System.out.println(meetNow);
@@ -363,9 +388,6 @@ public class WebContent1 {
 		hm.put("time", times);
 		
 		write.create(hm,province,month,file);
-	//	wg.getTextAreaDisplay().setText("完成一个了");
-	//	Thread.sleep(1000);
-	//	wg.setVisible(true);
 		
 	}
 	public void getContentByOneUrl (String url) throws Exception{
