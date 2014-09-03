@@ -243,6 +243,12 @@ public class WebContent1 {
 		}
 		return hrefs;
 	}
+	/**
+	 * 根据月份url获取所有展会url
+	 * @param url
+	 * @return
+	 * @throws Exception
+	 */
 	public List<String> getMeetsForMonth(String url) throws Exception {
 		List<String> links = new ArrayList<String>();
 		List<String> hrefs = new ArrayList<String>();

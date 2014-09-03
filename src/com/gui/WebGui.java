@@ -246,7 +246,7 @@ public class WebGui extends JFrame implements ActionListener,ItemListener{
 							String province =comboPro.getSelectedItem().toString();
 							String month=comboMonth.getSelectedItem().toString();
 							//需要先建立对应的目录
-							File file = new File("E:/myExcel/text.xls");
+							File file = new File("E:/temp/temp.xls");
 							String htmlurl="http://www.eshow365.com/";
 							WebContent1 wc = new WebContent1(null, htmlurl);
 							try {
@@ -300,7 +300,7 @@ public class WebGui extends JFrame implements ActionListener,ItemListener{
 				comboMonth.removeAllItems();
 				String monthName = "";
 				for(int i = 1;i<=12;i++){
-					monthName ="上海"+i+"月展会";
+					monthName =i+"月展会";
 					comboMonth.addItem(monthName);
 				}
 				
